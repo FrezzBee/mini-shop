@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <title>Mini Shop</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { padding: 8px 12px; margin-bottom: 12px; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 6px 0; border-bottom: 1px solid #eee; }
+    .price { font-weight: bold; margin-left: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Mini Shop</h1>
+  <button id="loadBtn">Load items</button>
+  <ul id="itemsList"></ul>
+
+  <script>
+    const loadBtn = document.getElementById('loadBtn');
+    const itemsList = document.getElementById('itemsList');
+
+    loadBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('http://localhost:3000/items');
+        if (!res.ok) throw new Error('Network response was not ok');
+        const items = await res.json();
+        itemsList.innerHTML = '';
+        items.forEach(it => {
+          const li = document.createElement('li');
+          li.textContent = `${it.name}`;
+          const span = document.createElement('span');
+          span.className = 'price';
+          span.textContent = `${it.price} ₴`;
+          li.appendChild(span);
+          itemsList.appendChild(li);
+        });
+      } catch (err) {
+        itemsList.innerHTML = '<li>Error loading items</li>';
+        console.error('Fetch error:', err);
+      }
+    });
+  </script>
+</body>
+</html>
+
